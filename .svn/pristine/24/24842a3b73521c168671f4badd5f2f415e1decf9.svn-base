@@ -1,0 +1,54 @@
+server.servlet.context-path=/api
+server.port= 8090
+
+
+# DataSource settings: set here your own configurations for the database 
+# connection. In this example we have "netgloo_blog" as database name and 
+# "root" as username and password.
+
+# Oracle Datasource
+spring.datasource.url =jdbc:oracle:thin:@(DESCRIPTION_LIST=(LOAD_BALANCE=off)(FAILOVER=on)(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=on)(ADDRESS = (PROTOCOL = TCP)(HOST = dm05-scan.istat.it)(PORT = 1521)))(CONNECT_DATA=(SERVICE_NAME=CRO1C)))) 
+spring.datasource.username = SV_SINTESI
+spring.datasource.password = svsintesi
+# Oracle 12c dialect
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.Oracle12cDialect
+
+
+
+
+# Keep the connection alive if idle for a long time (needed in production)
+spring.datasource.testWhileIdle = true
+spring.datasource.validationQuery = SELECT 1 FROM DUAL
+spring.datasource.tomcat.max-active=1
+spring.datasource.tomcat.initial-size=1
+spring.datasource.tomcat.max-idle=1
+spring.datasource.tomcat.min-idle=1
+
+# Show or not log for each sql query
+spring.jpa.show-sql = true
+
+
+# Hibernate ddl auto (create, create-drop, update)
+#spring.jpa.hibernate.ddl-auto = update
+
+# Naming strategy
+spring.jpa.hibernate.naming-strategy = org.hibernate.cfg.ImprovedNamingStrategy
+
+# Use spring.jpa.properties.* for Hibernate native properties (the prefix is
+# stripped before adding them to the entity manager)
+
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+
+
+
+#disable the Thymeleaf template caching i
+spring.thymeleaf.cache = false
+
+
+
+logging.level.org.springframework.web=info
+logging.level.org.hibernate=info
+logging.level.org.hibernate.SQL=info
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=info 
+
+log4j.logger.org.hibernate.type=info

@@ -1,0 +1,163 @@
+package it.istat.sintesi.interpreter.smeta.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
+import lombok.Data;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the SM_UNIT database table.
+ * 
+ */
+@Data
+@Entity
+@Table(name="SM_UNIT")
+@NamedQuery(name="SmUnit.findAll", query="SELECT s FROM SmUnit s")
+public class SmUnit implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(unique=true, nullable=false)
+	private Long id;
+
+	@Column(length=100)
+	private String descrizione;
+
+	//bi-directional many-to-one association to SmDataset
+	@OneToMany(mappedBy="smUnit")
+	private List<SmDataset> smDatasets;
+
+	//bi-directional many-to-one association to SmEdizUnitVar
+	@OneToMany(mappedBy="smUnit")
+	@Where(clause = "attiva = 1")
+	private List<SmEdizUnitVar> smEdizUnitVars;
+
+	//bi-directional many-to-one association to SmUnit
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="UNIT_PADRE")
+	private SmUnit smUnit;
+
+	//bi-directional many-to-one association to SmUnit
+	@OneToMany(mappedBy="smUnit")
+	private List<SmUnit> smUnits;
+
+	//bi-directional many-to-one association to SmUnitType
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="UNIT_TYPE", nullable=false)
+	private SmUnitType smUnitType;
+
+	//bi-directional many-to-one association to SmUnitEditionFase
+	@OneToMany(mappedBy="smUnit")
+	private List<SmUnitEditionFase> smUnitEditionFases;
+ 
+	public SmUnit(Long id) {
+		this.id=id;
+	}
+	 
+	public SmUnit() {
+		 
+	}
+
+	
+	
+	 	public SmDataset addSmDataset(SmDataset smDataset) {
+		getSmDatasets().add(smDataset);
+		smDataset.setSmUnit(this);
+
+		return smDataset;
+	}
+
+	public SmDataset removeSmDataset(SmDataset smDataset) {
+		getSmDatasets().remove(smDataset);
+		smDataset.setSmUnit(null);
+
+		return smDataset;
+	}
+
+	 
+	public SmEdizUnitVar addSmEdizUnitVar(SmEdizUnitVar smEdizUnitVar) {
+		getSmEdizUnitVars().add(smEdizUnitVar);
+		smEdizUnitVar.setSmUnit(this);
+
+		return smEdizUnitVar;
+	}
+
+	public SmEdizUnitVar removeSmEdizUnitVar(SmEdizUnitVar smEdizUnitVar) {
+		getSmEdizUnitVars().remove(smEdizUnitVar);
+		smEdizUnitVar.setSmUnit(null);
+
+		return smEdizUnitVar;
+	}
+
+ 
+	public SmUnit addSmUnit(SmUnit smUnit) {
+		getSmUnits().add(smUnit);
+		smUnit.setSmUnit(this);
+
+		return smUnit;
+	}
+
+	public SmUnit removeSmUnit(SmUnit smUnit) {
+		getSmUnits().remove(smUnit);
+		smUnit.setSmUnit(null);
+
+		return smUnit;
+	}
+
+	 
+	public SmUnitEditionFase addSmUnitEditionFas(SmUnitEditionFase smUnitEditionFas) {
+		getSmUnitEditionFases().add(smUnitEditionFas);
+		smUnitEditionFas.setSmUnit(this);
+
+		return smUnitEditionFas;
+	}
+
+	public SmUnitEditionFase removeSmUnitEditionFas(SmUnitEditionFase smUnitEditionFas) {
+		getSmUnitEditionFases().remove(smUnitEditionFas);
+		smUnitEditionFas.setSmUnit(null);
+
+		return smUnitEditionFas;
+	}
+
+	/**
+	 * @param id
+	 * @param descrizione
+	 * @param smDatasets
+	 * @param smEdizUnitVars
+	 * @param smUnit
+	 * @param smUnits
+	 * @param smUnitType
+	 * @param smUnitEditionFases
+	 */
+	public SmUnit(Long id, String descrizione, List<SmDataset> smDatasets, List<SmEdizUnitVar> smEdizUnitVars,
+			SmUnit smUnit, List<SmUnit> smUnits, SmUnitType smUnitType, List<SmUnitEditionFase> smUnitEditionFases) {
+		super();
+		this.id = id;
+		this.descrizione = descrizione;
+		this.smDatasets = smDatasets;
+		this.smEdizUnitVars = smEdizUnitVars;
+		this.smUnit = smUnit;
+		this.smUnits = smUnits;
+		this.smUnitType = smUnitType;
+		this.smUnitEditionFases = smUnitEditionFases;
+	}
+	
+	public SmUnit(SmUnit unit1 ) {
+		super();
+		this.id =unit1.id;
+		this.descrizione = unit1.descrizione;
+		this.smDatasets = unit1.smDatasets;
+		this.smEdizUnitVars = unit1.smEdizUnitVars;
+		this.smUnit = unit1.smUnit;
+		this.smUnits = unit1.smUnits;
+		this.smUnitType = unit1.smUnitType;
+		this.smUnitEditionFases = unit1.smUnitEditionFases;
+	}
+
+}

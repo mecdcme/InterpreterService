@@ -1,0 +1,137 @@
+package it.istat.sintesi.interpreter.smeta.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.List;
+
+
+/**
+ * The persistent class for the SM_RULE database table.
+ * 
+ */
+@Entity
+@Table(name="SM_RULE")
+@NamedQuery(name="SmRule.findAll", query="SELECT s FROM SmRule s")
+public class SmRule implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(unique=true, nullable=false)
+	private long id;
+
+	private BigDecimal active;
+
+	@Column(length=50)
+	private String descr;
+
+	private BigDecimal errcode;
+
+	@Column(length=50)
+	private String nome;
+
+	@Column(length=500)
+	private String regola;
+
+	private BigDecimal rtype;
+
+	//bi-directional many-to-one association to SmRuleset
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="RULESET")
+	private SmRuleset smRuleset;
+
+	//bi-directional many-to-one association to SmWorkflow
+	@OneToMany(mappedBy="smRule")
+	private List<SmWorkflow> smWorkflows;
+
+	public SmRule() {
+	}
+
+	public long getId() {
+		return this.id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public BigDecimal getActive() {
+		return this.active;
+	}
+
+	public void setActive(BigDecimal active) {
+		this.active = active;
+	}
+
+	public String getDescr() {
+		return this.descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
+
+	public BigDecimal getErrcode() {
+		return this.errcode;
+	}
+
+	public void setErrcode(BigDecimal errcode) {
+		this.errcode = errcode;
+	}
+
+	public String getNome() {
+		return this.nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getRegola() {
+		return this.regola;
+	}
+
+	public void setRegola(String regola) {
+		this.regola = regola;
+	}
+
+	public BigDecimal getRtype() {
+		return this.rtype;
+	}
+
+	public void setRtype(BigDecimal rtype) {
+		this.rtype = rtype;
+	}
+
+	public SmRuleset getSmRuleset() {
+		return this.smRuleset;
+	}
+
+	public void setSmRuleset(SmRuleset smRuleset) {
+		this.smRuleset = smRuleset;
+	}
+
+	public List<SmWorkflow> getSmWorkflows() {
+		return this.smWorkflows;
+	}
+
+	public void setSmWorkflows(List<SmWorkflow> smWorkflows) {
+		this.smWorkflows = smWorkflows;
+	}
+
+	public SmWorkflow addSmWorkflow(SmWorkflow smWorkflow) {
+		getSmWorkflows().add(smWorkflow);
+		smWorkflow.setSmRule(this);
+
+		return smWorkflow;
+	}
+
+	public SmWorkflow removeSmWorkflow(SmWorkflow smWorkflow) {
+		getSmWorkflows().remove(smWorkflow);
+		smWorkflow.setSmRule(null);
+
+		return smWorkflow;
+	}
+
+}

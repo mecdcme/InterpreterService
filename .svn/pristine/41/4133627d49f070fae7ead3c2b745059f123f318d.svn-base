@@ -1,0 +1,112 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_INSTANCE_VARIABLE")
+public class SmInstanceVariable implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_INSTANCE_VARIABLE", sequenceName = "SEQ_SM_INSTANCE_VARIABLE", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_INSTANCE_VARIABLE")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private BigDecimal id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(name = "NOME_CAMPO")
+    private String nomeCampo;
+    @Size(max = 100)
+    @Column(name = "DESCRIZIONE")
+    private String descrizione;
+    @Size(max = 50)
+    @Column(name = "ETICHETTA")
+    private String etichetta;
+    @Size(max = 30)
+    @Column(name = "TIPO")
+    private String tipo;
+    @Size(max = 30)
+    @Column(name = "INF")
+    private String inf;
+    @Size(max = 30)
+    @Column(name = "SUP")
+    private String sup;
+    @Size(max = 30)
+    @Column(name = "MISS")
+    private String miss;
+    @Size(max = 10)
+    @Column(name = "INDAGINE")
+    private String indagine;
+    @Column(name = "LENGTH")
+    private Long length;
+    @Column(name = "TIPO_VARIABILE_SUM")
+    private Short tipoVariabileSum;
+    @JoinColumn(name = "ID_VARIABLE", referencedColumnName = "ID")
+    @ManyToOne
+    private SmVariable idVariable;
+
+    public SmInstanceVariable() {
+    }
+
+    public SmInstanceVariable(BigDecimal id) {
+        this.id = id;
+    }
+
+    public SmInstanceVariable(BigDecimal id, String nomeCampo) {
+        this.id = id;
+        this.nomeCampo = nomeCampo;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmInstanceVariable)) {
+            return false;
+        }
+        SmInstanceVariable other = (SmInstanceVariable) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmInstanceVariable[ id=" + id + " ]";
+    }
+    
+}

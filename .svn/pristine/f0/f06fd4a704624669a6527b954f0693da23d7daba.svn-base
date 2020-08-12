@@ -1,0 +1,323 @@
+package it.istat.sintesi.interpreter.dao;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import it.istat.sintesi.interpreter.bean.ModelDataBean;
+import it.istat.sintesi.interpreter.utils.PojoUtiliy;
+import it.istat.sintesi.interpreter.domain.SmEdizUnitVar;
+
+ 
+
+@Repository
+public class InterpreterSqlRepository {
+
+	@Autowired
+	private EntityManager em;
+	 
+	public List<Object[]> getGenericSQL(String query, Map<String, String> parametri) {
+
+		Query q = em.createNativeQuery(query);
+
+		for (String key : parametri.keySet()) {
+			String val = parametri.get(key);
+			q.setParameter(key, val);
+
+		}
+
+		return (List<Object[]>) q.getResultList();
+	}
+
+	public Map<String, Object> getGenericSQLParamsList(String query, List<String> parametri) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		TypedQuery<Object[]> q = (TypedQuery) em.createNativeQuery(query, Object[].class);
+
+		int i = 1;
+		for (Iterator iterator = parametri.iterator(); iterator.hasNext();) {
+			String val = (String) iterator.next();
+			q.setParameter(i, val);
+			i++;
+
+		}
+
+		List<Object[]> list = q.getResultList();
+
+		for (Object result : list) {
+			map.put(result.toString(), result);
+		}
+
+		return map;
+
+	}
+
+	public Object getOneGenericSQLParamsList(String query, List<String> parametri) {
+
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+		for (Iterator iterator = parametri.iterator(); iterator.hasNext();) {
+			String val = (String) iterator.next();
+			q.setParameter(i, val);
+			i++;
+
+		}
+
+		return (Object) q.getSingleResult();
+	}
+
+	// Return a Map Values
+	public Map<?, ?> getOneAsMapGenericSQLParamsMap(ModelDataBean mdb, String query,Map<String, String> parametri, List<String> campiSelect)
+			throws Exception {
+		HashMap<String, Object> ret = new HashMap<String, Object>();
+		
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+
+		for (Iterator iterator = parametri.keySet().iterator(); iterator.hasNext();) {
+			String k = (String) iterator.next();
+			String v = parametri.get(k);
+			if (v == null)
+				v = "";
+			q.setParameter(i, v);
+			i++;
+
+		}
+		Object[] ris = (Object[]) q.getSingleResult();
+	 
+		for (int j = 0; j < campiSelect.size(); j++) {
+			Object val = ris[j];
+			if (val == null)
+				val = "";
+			ret.put(campiSelect.get(j).toUpperCase(), val);
+		}
+		// bean=Utility.creaPojoValoridaMDB( mdb,ret);
+
+		return ret;
+	}
+
+	// Return a of Pojo obect
+	public Object getOneGenericSQLParamsList(ModelDataBean mdb, String query, List<String> parametri)
+			throws Exception {
+		HashMap<String, Object> ret = new HashMap<String, Object>();
+		Object bean = null;
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+		for (Iterator iterator = parametri.iterator(); iterator.hasNext();) {
+			String val = (String) iterator.next();
+			q.setParameter(i, val);
+			i++;
+
+		}
+		Object[] ris = (Object[]) q.getSingleResult();
+		Object[] campi = (Object[]) mdb.getCampiSemplici().toArray();
+		for (int j = 0; j < ris.length; j++) {
+			Object val = ris[j];
+			if (val == null)
+				val = "";
+			ret.put(((SmEdizUnitVar) campi[j]).getIdVariabile().getIdVariable() , val);
+		}
+		bean = PojoUtiliy.creaPojoValoridaMDB(mdb, ret);
+
+		return bean;
+	}
+
+	// Return a of Pojo obect
+	public Object getOneGenericSQLObjParamsMap(ModelDataBean mdb, String query, Map<String, String> parametri, List<String> campiSelect)
+			throws Exception {
+		HashMap<String, Object> ret = new HashMap<String, Object>();
+		Object bean = null;
+		Query q = em.createNativeQuery(query);
+		int i = 1;
+
+		for (Iterator iterator = mdb.getChiave().iterator(); iterator.hasNext();) {
+			String k = (String) iterator.next();
+			String v = parametri.get(k);
+			if (v == null)
+				v = "";
+			q.setParameter(i, v);
+			i++;
+
+		}
+		Object[] ris = (Object[]) q.getSingleResult();
+		 
+
+		for (int j = 0; j < campiSelect.size(); j++) {
+			Object val = ris[j];
+
+			if (val == null)
+				val = "";
+			ret.put(  campiSelect.get(j), val);
+		 
+		}
+		bean = PojoUtiliy.creaPojoValoridaMDB(mdb, ret);
+
+		return bean;
+	}
+	
+	// Return a list of Pojo obects by Maps Params
+	public List<Object> getListObjsGenericSQLParamsMap(ModelDataBean mdb, String query,Map<String, String> parametri, List<String> campiSelect)
+			throws Exception {
+
+		List<Object> listRet = new ArrayList<Object>();
+
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+		for (Iterator iterator = parametri.keySet().iterator(); iterator.hasNext();) {
+			String k = (String) iterator.next();
+			String v = parametri.get(k);
+			if (v == null)
+				v = "";
+			q.setParameter(i, v);
+			i++;
+
+		}
+		List<Object[]> risList = q.getResultList();
+	  
+		 
+		for (Iterator iterator = risList.iterator(); iterator.hasNext();) {
+			Object[] ris = (Object[]) iterator.next();
+			HashMap<String, Object> mapval = new HashMap<String, Object>();
+
+			for (int j = 0; j < campiSelect.size(); j++) {
+				Object val = ris[j];
+
+				if (val == null)
+					val = "";
+				mapval.put(  campiSelect.get(j), val);
+			}
+			Object bean = PojoUtiliy.creaPojoValoridaMDB(mdb, mapval);
+			listRet.add(bean);
+		}
+
+		return listRet;
+	}
+
+	// Return a list of Pojo obects
+	public List<Object> getListObjsGenericSQLParamsList(ModelDataBean mdb, String query, List<String> parametri, List<String> campiSelect)
+			throws Exception {
+
+		List<Object> listRet = new ArrayList<Object>();
+
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+		for (Iterator iterator = parametri.iterator(); iterator.hasNext();) {
+			String val = (String) iterator.next();
+			q.setParameter(i, val);
+			i++;
+
+		}
+		List<Object[]> risList = q.getResultList();
+ 
+		for (Iterator iterator = risList.iterator(); iterator.hasNext();) {
+			Object[] ris = (Object[]) iterator.next();
+			HashMap<String, Object> mapval = new HashMap<String, Object>();
+
+			for (int j = 0; j < campiSelect.size(); j++) {
+				Object val = ris[j];
+
+				if (val == null)
+					val = "";
+				mapval.put(  campiSelect.get(j), val);
+			}
+			Object bean = PojoUtiliy.creaPojoValoridaMDB(mdb, mapval);
+			listRet.add(bean);
+		}
+
+		return listRet;
+	}
+
+	// Return a list of Map Values
+	public List<Object> getListGenericSQLParamsListMapValue(ModelDataBean mdb, String query, List<String> parametri, List<String> campiSelect)
+			throws Exception {
+
+		List<Object> listRet = new ArrayList<Object>();
+
+		Query q = em.createNativeQuery(query);
+
+		int i = 1;
+		for (Iterator iterator = parametri.iterator(); iterator.hasNext();) {
+			String val = (String) iterator.next();
+			q.setParameter(i, val);
+			i++;
+
+		}
+		List<Object[]> risList = q.getResultList();
+	 
+		for (Iterator iterator = risList.iterator(); iterator.hasNext();) {
+			Object[] ris = (Object[]) iterator.next();
+			HashMap<String, Object> mapval = new HashMap<String, Object>();
+
+			for (int j = 0; j < campiSelect.size(); j++) {
+				Object val = ris[j];
+
+				if (val == null)
+					val = "";
+				mapval.put(  campiSelect.get(j).toUpperCase(), val);
+			}
+
+			listRet.add(mapval);
+		}
+
+		return listRet;
+	}
+	
+	// Return a list of Maps elements by Maps Params
+		public List<Object> getListMapsValuesGenericSQLParamsMap(ModelDataBean mdb, String query,Map<String, String> parametri, List<String> campiSelect)
+				throws Exception {
+
+			List<Object> listRet = new ArrayList<Object>();
+
+			Query q = em.createNativeQuery(query);
+
+			int i = 1;
+			for (Iterator iterator = parametri.keySet().iterator(); iterator.hasNext();) {
+				String k = (String) iterator.next();
+				String v = parametri.get(k);
+				if (v == null)
+					v = "";
+				q.setParameter(i, v);
+				i++;
+
+			}
+			List<Object[]> risList = q.getResultList();
+		  
+			 
+			for (Iterator iterator = risList.iterator(); iterator.hasNext();) {
+				Object[] ris = (Object[]) iterator.next();
+				HashMap<String, Object> mapval = new HashMap<String, Object>();
+
+				for (int j = 0; j < campiSelect.size(); j++) {
+					Object val = ris[j];
+
+					if (val == null)
+						val = "";
+					mapval.put(  campiSelect.get(j).toUpperCase(), val);
+				}
+				 
+				listRet.add(mapval);
+			}
+
+			return listRet;
+		}
+	
+
+	public int getSizeGenericSQLMapParamsList(ModelDataBean mdb, String selectAll, List<String> params) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

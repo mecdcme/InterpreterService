@@ -1,0 +1,82 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_CAMPIONE")
+public class SmCampione implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_CAMPIONE", sequenceName = "SEQ_SM_CAMPIONE", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_CAMPIONE")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private BigDecimal id;
+    @Size(max = 100)
+    @Column(name = "DESCRIZIONE")
+    private String descrizione;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "campione")
+    private Collection<SmEdizioneCampione> smEdizioneCampioneCollection;
+
+    public SmCampione() {
+    }
+
+    public SmCampione(BigDecimal id) {
+        this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmCampione)) {
+            return false;
+        }
+        SmCampione other = (SmCampione) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmCampione[ id=" + id + " ]";
+    }
+    
+}

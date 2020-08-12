@@ -1,0 +1,157 @@
+/**
+ * 
+ */
+package it.istat.sintesi.interpreter.services;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import it.istat.sintesi.interpreter.bean.ModelDataBean;
+import it.istat.sintesi.interpreter.dao.InterpreterSqlRepository;
+import it.istat.sintesi.interpreter.dao.SmUnitRepository;
+import it.istat.sintesi.interpreter.domain.wd.WdEdizione;
+import it.istat.sintesi.interpreter.smeta.domain.SmEdizione;
+import it.istat.sintesi.interpreter.smeta.domain.SmFase;
+import it.istat.sintesi.interpreter.smeta.domain.SmUnit;
+import it.istat.sintesi.interpreter.utils.Survey_CONST;
+import it.istat.sintesi.interpreter.utils.Utility;
+
+/**
+ * @author framato
+ *
+ */
+@Service
+public class InterpreterService {
+	@Autowired
+	private InterpreterSqlRepository isqlrepository;
+	@Autowired
+	private SmUnitRepository unitRepository;
+
+	public ModelDataBean getModelDataBean(Long edizioneId, Long faseId) throws Exception {
+		// TODO Auto-generated method stub
+		SmUnit unit = unitRepository.findUnitByEdizioneAndFase(new SmEdizione(edizioneId), new SmFase(faseId));
+
+		ModelDataBean mdb = new ModelDataBean(unit);
+		return mdb;
+	}
+
+	public List<Object> loadAllData(ModelDataBean mdb) throws Exception {
+		// TODO Auto-generated method stub
+		return isqlrepository.getListMapsValuesGenericSQLParamsMap(mdb,
+				mdb.selectCampiWhere(Arrays.asList("*"), new ArrayList<>()), new HashMap<>(), Arrays.asList("*"));
+
+	}
+
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, ?> getUnitMicroDataList(WdEdizione eiwf, SmFase fase, String keyParams) throws Exception {
+		// TODO Auto-generated method stub
+
+		Map<String, Object> ret = new HashMap<>();
+		SmEdizione edizione = new SmEdizione(eiwf.getEdizione());
+		SmUnit unit = unitRepository.findUnitByEdizioneAndFase(edizione, fase);
+
+		ModelDataBean mdb = new ModelDataBean(unit);
+
+		List<String> campiSelect = new ArrayList<>();
+		List<String> campiSelectforQuery = new ArrayList<>();
+		mdb.getCampiSemplici().forEach((el) -> {
+			campiSelectforQuery
+					.add((el.getAliasSql() == null || el.getAliasSql().isEmpty()) ? el.getSmVariable().getIdVariable()
+							: el.getAliasSql());
+			campiSelect.add(el.getSmVariable().getIdVariable());
+		});
+
+		// campiWhere.add("ANNO");
+		// campiWhere.add("MESE");
+
+		Map<String, String> params = Utility.getMapParams(keyParams);
+
+		List<String> campiWhere = getConditionListFromParamsMap(params);
+		List dataList = isqlrepository.getListMapsValuesGenericSQLParamsMap(mdb,
+				mdb.selectCampiWhere(campiSelectforQuery, campiWhere), params, campiSelect);
+		ret.put("dataList", dataList);
+		List<String> fieldsList = mdb.getNomeCampiSemplici();
+		List<String> chiaviList = mdb.getChiave();
+		ret.put("chiaviList", chiaviList);
+		ret.put("fieldsList", fieldsList);
+		ret.put("idi", mdb.getId());
+		return ret;
+	}
+
+	/**
+	 * @param eiwf
+	 * @param keyParams
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> getUnitMicroData(WdEdizione eiwf, SmFase fase, String keyParams) throws Exception {
+		// TODO Auto-generated method stub
+		Map<String, Object> ret = new HashMap<>();
+
+		SmUnit unit = unitRepository.findUnitByEdizioneAndFase(new SmEdizione(eiwf.getEdizione()), fase);
+
+		ModelDataBean mdb = new ModelDataBean(unit);
+
+		Object dataObj = loadQuestData(mdb, keyParams);
+		ret.put(Survey_CONST.QUESTIONARIO_BEAN, dataObj);
+
+		List<String> fieldsList = mdb.getNomeCampiSemplici();
+		List<String> chiaviList = mdb.getChiave();
+		ret.put("chiaviList", chiaviList);
+		ret.put("fieldsList", fieldsList);
+		ret.put("idi", mdb.getId());
+		return ret;
+	}
+
+	/**
+	 * @param mdb
+	 * @param keyParams
+	 * @return
+	 */
+	public Object loadQuestData(ModelDataBean mdb, String keyParams) throws Exception {
+		// TODO Auto-generated method stub
+
+		Map<String, String> params = Utility.getMapParams(keyParams);
+		// Map listav = sqlrepository.getGenericSQLParamsList(mdb.selectByChiave(),
+		// params);
+
+		Object microDataUnit = null;
+		List<String> campiSelect = new ArrayList<>();
+		List<String> campiSelectforQuery = new ArrayList<>();
+		mdb.getCampiSemplici().forEach((el) -> {
+			campiSelectforQuery
+					.add((el.getAliasSql() == null || el.getAliasSql().isEmpty()) ? el.getSmVariable().getIdVariable()
+							: el.getAliasSql());
+			campiSelect.add(el.getSmVariable().getIdVariable());
+		});
+
+		List<String> campiWhere = getConditionListFromParamsMap(params);
+
+		microDataUnit = isqlrepository.getOneAsMapGenericSQLParamsMap(mdb,
+				mdb.selectWithInQueryCampiWhere(campiSelectforQuery, campiWhere), params, campiSelect);
+
+		return microDataUnit;
+	}
+
+	/**
+	 * @param keyParams
+	 * @return
+	 */
+	private List<String> getConditionListFromParamsMap(Map<String, String> params) {
+		// TODO Auto-generated method stub
+		List<String> conditions = new ArrayList<>();
+		params.keySet().forEach((el) -> conditions.add(el.toUpperCase()));
+
+		return conditions;
+	}
+
+}

@@ -1,0 +1,131 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_INDAGINE_FASI_SIDI")
+public class SmIndagineFasiSidi implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_INDAGINE_FASI_SIDI", sequenceName = "SEQ_SM_INDAGINE_FASI_SIDI", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_INDAGINE_FASI_SIDI")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private BigDecimal id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 21)
+    @Column(name = "CODICE_PROCESSO_SIDI")
+    private String codiceProcessoSidi;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CODICE_FASE")
+    private long codiceFase;
+    @Column(name = "CODICE_FASE_PADRE")
+    private Long codiceFasePadre;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 450)
+    @Column(name = "NOME_FASE")
+    private String nomeFase;
+    @Size(max = 450)
+    @Column(name = "NOME_FASE_ENG")
+    private String nomeFaseEng;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE_FASE")
+    private String descrizioneFase;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE_FASE_ENG")
+    private String descrizioneFaseEng;
+    @Size(max = 39)
+    @Column(name = "STATO_FASE")
+    private String statoFase;
+    @Column(name = "ORDINE0")
+    private Long ordine0;
+    @Column(name = "ORDINE1")
+    private Long ordine1;
+    @Column(name = "ORDINE2")
+    private Long ordine2;
+    @Column(name = "ORDINE3")
+    private Long ordine3;
+    @Column(name = "DATA_IN")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataIn;
+    @Column(name = "DATA_FIN")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataFin;
+    @JoinColumn(name = "INDAGINE", referencedColumnName = "ID")
+    @ManyToOne
+    private SmIndagine indagine;
+
+    public SmIndagineFasiSidi() {
+    }
+
+    public SmIndagineFasiSidi(BigDecimal id) {
+        this.id = id;
+    }
+
+    public SmIndagineFasiSidi(BigDecimal id, String codiceProcessoSidi, long codiceFase, String nomeFase) {
+        this.id = id;
+        this.codiceProcessoSidi = codiceProcessoSidi;
+        this.codiceFase = codiceFase;
+        this.nomeFase = nomeFase;
+    }
+
+    
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmIndagineFasiSidi)) {
+            return false;
+        }
+        SmIndagineFasiSidi other = (SmIndagineFasiSidi) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmIndagineFasiSidi[ id=" + id + " ]";
+    }
+    
+}

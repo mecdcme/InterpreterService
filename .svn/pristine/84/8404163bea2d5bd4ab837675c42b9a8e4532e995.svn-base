@@ -1,0 +1,22 @@
+/**
+ * 
+ */
+package it.istat.sintesi.interpreter.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import it.istat.sintesi.interpreter.domain.SmEdizione;
+import it.istat.sintesi.interpreter.domain.SmUnit;
+
+
+
+/**
+ * @author framato
+ *
+ */
+@Repository
+public interface SmUnitRepository  extends JpaRepository<SmUnit, Long> {
+
+	 public SmUnit findByEdizione(SmEdizione edizione);
+}

@@ -1,0 +1,115 @@
+package it.istat.sintesi.interpreter.smeta.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+
+/**
+ * The persistent class for the SM_WORKSET database table.
+ * 
+ */
+@Entity
+@Table(name="SM_WORKSET")
+@NamedQuery(name="SmWorkset.findAll", query="SELECT s FROM SmWorkset s")
+public class SmWorkset implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(unique=true, nullable=false)
+	private long id;
+
+	@Column(length=255)
+	private String descrizione;
+
+	@Column(name="ID_OGGETTO")
+	private BigDecimal idOggetto;
+
+	@Column(name="NOME_OGGETTO", length=16)
+	private String nomeOggetto;
+
+	@Column(nullable=false)
+	private BigDecimal ordine;
+
+	@Column(name="TIPO_IO")
+	private BigDecimal tipoIo;
+
+	//bi-directional many-to-one association to SmStepInstance
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ISTANZA")
+	private SmStepInstance smStepInstance;
+
+	//bi-directional many-to-one association to SmTipoOggetto
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="TIPO_OGGETTO")
+	private SmTipoOggetto smTipoOggetto;
+
+	public SmWorkset() {
+	}
+
+	public long getId() {
+		return this.id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getDescrizione() {
+		return this.descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
+	public BigDecimal getIdOggetto() {
+		return this.idOggetto;
+	}
+
+	public void setIdOggetto(BigDecimal idOggetto) {
+		this.idOggetto = idOggetto;
+	}
+
+	public String getNomeOggetto() {
+		return this.nomeOggetto;
+	}
+
+	public void setNomeOggetto(String nomeOggetto) {
+		this.nomeOggetto = nomeOggetto;
+	}
+
+	public BigDecimal getOrdine() {
+		return this.ordine;
+	}
+
+	public void setOrdine(BigDecimal ordine) {
+		this.ordine = ordine;
+	}
+
+	public BigDecimal getTipoIo() {
+		return this.tipoIo;
+	}
+
+	public void setTipoIo(BigDecimal tipoIo) {
+		this.tipoIo = tipoIo;
+	}
+
+	public SmStepInstance getSmStepInstance() {
+		return this.smStepInstance;
+	}
+
+	public void setSmStepInstance(SmStepInstance smStepInstance) {
+		this.smStepInstance = smStepInstance;
+	}
+
+	public SmTipoOggetto getSmTipoOggetto() {
+		return this.smTipoOggetto;
+	}
+
+	public void setSmTipoOggetto(SmTipoOggetto smTipoOggetto) {
+		this.smTipoOggetto = smTipoOggetto;
+	}
+
+}

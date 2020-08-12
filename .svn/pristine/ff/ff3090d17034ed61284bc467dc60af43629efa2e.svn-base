@@ -1,0 +1,43 @@
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import lombok.Data;
+
+
+
+/**
+ * The persistent class for the SM_EDIZ_UNIT_VAR database table.
+ * 
+ */
+@Data
+@Entity
+@Table(name = "SM_EDIZ_UNIT_VAR")
+public class SmEdizUnitVar implements Serializable {
+	private static final long serialVersionUID = 1L;
+	@Id
+	@SequenceGenerator(name = "ID_SEQ_SM_EDIZ_UNIT", sequenceName = "SEQ_SM_EDIZ_UNIT", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_EDIZ_UNIT")
+	@Column(name = "id", unique = true, nullable = false)
+	@Basic(optional = false)
+	private Long id;
+	@JoinColumn(name = "UNIT", referencedColumnName = "ID")
+	@ManyToOne
+	private SmUnit unit;
+	@JoinColumn(name = "VARIABILE", referencedColumnName = "ID")
+	@ManyToOne
+	private SmVariable idVariabile;
+	
+	@Column(name = "ORDINE")
+	private Short ordine;
+	
+	@OneToOne(fetch = FetchType.EAGER,
+	            cascade =  CascadeType.ALL,
+	            mappedBy = "SmEdizUnitVar")
+	private SmEdizUnitVarModelData smEdizUnitVarModelData;
+
+	public String getEtichetta() {
+		return this.idVariabile.getIdVariable();
+	}
+	}

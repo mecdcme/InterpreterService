@@ -1,0 +1,162 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_INDAGINE")
+public class SmIndagine implements Serializable {
+
+    @OneToMany(mappedBy = "indagine")
+    private List<SmIndagineListaUtenti> smIndagineListaUtentiList;
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_INDAGINE", sequenceName = "SEQ_SM_INDAGINE", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_INDAGINE")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private Long id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 21)
+    @Column(name = "CODICE_PROCESSO_SIDI")
+    private String codiceProcessoSidi;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 450)
+    @Column(name = "NOME_SIDI")
+    private String nomeSidi;
+    @Size(max = 450)
+    @Column(name = "NOME_SIDI_ENG")
+    private String nomeSidiEng;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE")
+    private String descrizione;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE_ENG")
+    private String descrizioneEng;
+    @Size(max = 327)
+    @Column(name = "EMAIL_RESPONSABILE")
+    private String emailResponsabile;
+    @Size(max = 603)
+    @Column(name = "NOME_RESPONSABILE")
+    private String nomeResponsabile;
+    @Column(name = "TIPO_PROCESSO")
+    private Short tipoProcesso;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 450)
+    @Column(name = "NOME_TIPO_PROCESSO")
+    private String nomeTipoProcesso;
+    @Size(max = 21)
+    @Column(name = "STATO")
+    private String stato;
+    @Size(max = 90)
+    @Column(name = "PERIOD_CICLO_PROD")
+    private String periodCicloProd;
+    @Size(max = 90)
+    @Column(name = "PERIOD_CICLO_PROD_ENG")
+    private String periodCicloProdEng;
+    @Size(max = 450)
+    @Column(name = "NOME_DISEGNO")
+    private String nomeDisegno;
+    @Size(max = 450)
+    @Column(name = "NOME_DISEGNO_ENG")
+    private String nomeDisegnoEng;
+    @Column(name = "CODICE_DISEGNO")
+    private Integer codiceDisegno;
+    @Size(max = 150)
+    @Column(name = "SIGLA")
+    private String sigla;
+    @Size(max = 4000)
+    @Column(name = "NORMATIVA")
+    private String normativa;
+    @OneToMany(mappedBy = "indagine")
+    private List<SmIndagineFasiSidi> smIndagineFasiSidiList;
+    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "indagine")
+    private List<SmEdizione> smEdizioneList;
+    
+    @OneToMany(mappedBy = "indagine")
+    private List<SmIndaginePsn> smIndaginePsnList;
+    @OneToMany(mappedBy = "indagine")
+    private List<SmIndagineUnitaRil> smIndagineUnitaRilList;
+    @OneToMany(mappedBy = "indagine")
+    private List<SmIndagineFenomeni> smIndagineFenomeniList;
+
+    public SmIndagine() {
+    }
+
+    public SmIndagine(Long id) {
+        this.id = id;
+    }
+
+    public SmIndagine(Long id, String codiceProcessoSidi, String nomeSidi, String nomeTipoProcesso) {
+        this.id = id;
+        this.codiceProcessoSidi = codiceProcessoSidi;
+        this.nomeSidi = nomeSidi;
+        this.nomeTipoProcesso = nomeTipoProcesso;
+    }
+
+   
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmIndagine)) {
+            return false;
+        }
+        SmIndagine other = (SmIndagine) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmIndagine[ id=" + id + " ]";
+    }
+
+    public List<SmIndagineListaUtenti> getSmIndagineListaUtentiList() {
+        return smIndagineListaUtentiList;
+    }
+
+    public void setSmIndagineListaUtentiList(List<SmIndagineListaUtenti> smIndagineListaUtentiList) {
+        this.smIndagineListaUtentiList = smIndagineListaUtentiList;
+    }
+    
+}

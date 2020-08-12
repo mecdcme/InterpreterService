@@ -1,0 +1,127 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_INDAGINE_FENOMENI")
+public class SmIndagineFenomeni implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_INDAGINE_FENOMENI", sequenceName = "SEQ_SM_INDAGINE_FENOMENI", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_INDAGINE_FENOMENI")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private BigDecimal id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 21)
+    @Column(name = "CODICE_PROCESSO_SIDI")
+    private String codiceProcessoSidi;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CODICE_FENOMENO")
+    private long codiceFenomeno;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 450)
+    @Column(name = "NOME_FENOMENO")
+    private String nomeFenomeno;
+    @Size(max = 450)
+    @Column(name = "NOME_FENOMENO_ENG")
+    private String nomeFenomenoEng;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE_FEN")
+    private String descrizioneFen;
+    @Size(max = 4000)
+    @Column(name = "DESCRIZIONE_FEN_ENG")
+    private String descrizioneFenEng;
+    @Size(max = 39)
+    @Column(name = "STATO_FEN")
+    private String statoFen;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DATA_IN")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataIn;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DATA_FIN")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataFin;
+    @JoinColumn(name = "INDAGINE", referencedColumnName = "ID")
+    @ManyToOne
+    private SmIndagine indagine;
+
+    public SmIndagineFenomeni() {
+    }
+
+    public SmIndagineFenomeni(BigDecimal id) {
+        this.id = id;
+    }
+
+    public SmIndagineFenomeni(BigDecimal id, String codiceProcessoSidi, long codiceFenomeno, String nomeFenomeno, Date dataIn, Date dataFin) {
+        this.id = id;
+        this.codiceProcessoSidi = codiceProcessoSidi;
+        this.codiceFenomeno = codiceFenomeno;
+        this.nomeFenomeno = nomeFenomeno;
+        this.dataIn = dataIn;
+        this.dataFin = dataFin;
+    }
+
+    
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmIndagineFenomeni)) {
+            return false;
+        }
+        SmIndagineFenomeni other = (SmIndagineFenomeni) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmIndagineFenomeni[ id=" + id + " ]";
+    }
+    
+}

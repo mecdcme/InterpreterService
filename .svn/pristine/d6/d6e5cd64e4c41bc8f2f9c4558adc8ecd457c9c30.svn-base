@@ -1,0 +1,72 @@
+package it.istat.sintesi.interpreter.restcontroller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.ui.Model;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.HttpSessionRequiredException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.HandlerMapping;
+
+import it.istat.sintesi.interpreter.bean.ModelDataBean;
+import it.istat.sintesi.interpreter.domain.SmEdizione;
+import it.istat.sintesi.interpreter.domain.SmUnit;
+import it.istat.sintesi.interpreter.domain.wd.WdEdizione;
+import it.istat.sintesi.interpreter.services.InterpreterService;
+import it.istat.sintesi.interpreter.services.NotificationService;
+import it.istat.sintesi.interpreter.utils.Survey_CONST;
+
+@RequestMapping("/interpreter")
+@RestController
+public class InterpreterController {
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private MessageSource messages;
+
+	@Autowired
+	private InterpreterService interpreterService;
+
+	@GetMapping(value = "/mdatalist/{edizione}/{anno}/{mese}")
+	public Map vmicrodati(@PathVariable("edizione") Long edizione, @PathVariable("anno") Short anno,
+			@PathVariable("mese") Short mese) throws Exception {
+		notificationService.removeAllMessages();
+		WdEdizione eiwf = new WdEdizione();
+		eiwf.setEdizione(edizione);
+		eiwf.setAnno(anno);
+		eiwf.setMese(mese);
+		Map data = interpreterService.getMicroDataList(eiwf);
+		return data;
+	}
+
+	@RequestMapping("/mdata/{edizione}/**")
+	public Map viewQuest(HttpServletRequest request,@PathVariable("edizione") Long edizione) throws Exception {
+
+		notificationService.removeAllMessages();
+		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+
+		AntPathMatcher apm = new AntPathMatcher();
+		String keyParams = apm.extractPathWithinPattern(bestMatchPattern, path);
+		WdEdizione eiwf = new WdEdizione();
+		eiwf.setEdizione(edizione);
+		Map data = interpreterService.getQuestData(eiwf, keyParams);
+
+		return data;
+	}
+
+}

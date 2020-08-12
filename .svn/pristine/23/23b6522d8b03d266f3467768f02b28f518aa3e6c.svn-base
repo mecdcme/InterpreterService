@@ -1,0 +1,46 @@
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import lombok.Data;
+
+
+
+/**
+ * The persistent class for the SM_EDIZ_UNIT_VAR database table.
+ * 
+ */
+@Data
+@Entity
+@Table(name = "SM_EDIZ_UNIT_VAR_MODELDATA")
+public class SmEdizUnitVarModelData implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@OneToOne(fetch = FetchType.EAGER)
+	@MapsId
+	@JoinColumn(name = "SM_EDIZ_UV_ID")
+    private SmEdizUnitVar SmEdizUnitVar;
+	
+	@Column(name = "FLAG_LISTA")
+	private Short flagLista;
+    @Column(name = "FLAG_CHIAVE")
+	private Short chiave;
+	@Column(name = "FLAG_SORT")
+	private Short flagSort;
+	@Column(name = "FLAG_FISSO")
+	private Short flagFisso;
+	@Column(name = "FLAG_CHIAVE_EXT")
+	private Short flagChiaveExt;
+	@Column(name = "FLAG_CHIAVE_INT")
+	private Short flagChiaveInt;
+	@Column(name = "FLAG_ATTIVO")
+	private Short flagAttivo;
+	@Column(name = "FLAG_OGGETTO")
+	private Short flagOggetto;
+	@Column(name = "CONDIZIONE")
+	private String condizione;
+	
+	
+	}

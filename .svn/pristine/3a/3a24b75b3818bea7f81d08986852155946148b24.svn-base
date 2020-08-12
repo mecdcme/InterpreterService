@@ -1,0 +1,134 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_UNIT")
+public class SmUnit implements Serializable {
+
+	/**
+	 * @param id
+	 * @param descrizione
+	 * @param smUnitList
+	 * @param unitPadre
+	 * @param unitType
+	 * @param edizione
+	 * @param smEdizUnitVarList
+	 * @param dataset
+	 */
+	public SmUnit(Long id, String descrizione, Collection<SmUnit> smUnitList, SmUnit unitPadre, SmUnitType unitType,
+			SmEdizione edizione, Collection<SmEdizUnitVar> smEdizUnitVarList, SmDataset dataset) {
+		super();
+		this.id = id;
+		this.descrizione = descrizione;
+		this.smUnitList = smUnitList;
+		this.unitPadre = unitPadre;
+		this.unitType = unitType;
+		this.edizione = edizione;
+		this.smEdizUnitVarList = smEdizUnitVarList;
+		this.dataset = dataset;
+	}
+	
+	public SmUnit(SmUnit unit1) {
+		super();
+		this.id = unit1.id;
+		this.descrizione = unit1. descrizione;
+		this.smUnitList =  unit1.smUnitList;
+		this.unitPadre = unit1. unitPadre;
+		this.unitType = unit1. unitType;
+		this.edizione = unit1. edizione;
+		this.smEdizUnitVarList = unit1. smEdizUnitVarList;
+		this.dataset =  unit1.dataset;
+	}
+
+	private static final long serialVersionUID = 1L;
+	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
+	// consider using these annotations to enforce field validation
+	@Id
+	@SequenceGenerator(name = "ID_SEQ_SM_UNIT", sequenceName = "SEQ_SM_UNIT", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_UNIT")
+	@Column(name = "id", unique = true, nullable = false)
+	@Basic(optional = false)
+	private Long id;
+	@Size(max = 100)
+	@Column(name = "DESCRIZIONE")
+	private String descrizione;
+	@OneToMany(mappedBy = "unitPadre")
+	private Collection<SmUnit> smUnitList;
+	@JoinColumn(name = "UNIT_PADRE", referencedColumnName = "ID")
+	@ManyToOne
+	private SmUnit unitPadre;
+	@JoinColumn(name = "UNIT_TYPE", referencedColumnName = "ID")
+	@ManyToOne(optional = false)
+	private SmUnitType unitType;
+	@JoinColumn(name = "EDIZIONE", referencedColumnName = "ID")
+	@ManyToOne(optional = false)
+	private SmEdizione edizione;
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "unit")
+	private Collection<SmEdizUnitVar> smEdizUnitVarList;
+	
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="dataset")
+	private SmDataset dataset;
+
+	public SmUnit() {
+	}
+
+	public SmUnit(Long id) {
+		this.id = id;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (id != null ? id.hashCode() : 0);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are not set
+		if (!(object instanceof SmUnit)) {
+			return false;
+		}
+		SmUnit other = (SmUnit) object;
+		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "it.istat.sintesi.survey.domain.smeta.SmUnit[ id=" + id + " ]";
+	}
+
+}

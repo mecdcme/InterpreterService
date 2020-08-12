@@ -1,0 +1,118 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package it.istat.sintesi.interpreter.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+/**
+ *
+ * @author andrea.pagano
+ */
+@Data
+@Entity
+@Table(name = "SM_VARIABLE")
+public class SmVariable implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+	@SequenceGenerator(name = "ID_SEQ_SM_VARIABLE", sequenceName = "SEQ_SM_VARIABLE", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQ_SM_VARIABLE")
+	@Column(name = "id", unique = true, nullable = false)
+    @Basic(optional = false)
+    private BigDecimal id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 150)
+    @Column(name = "ID_VARIABLE")
+    private String idVariable;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 4000)
+    @Column(name = "NOME_VARIABLE_IT")
+    private String nomeVariableIt;
+    @Size(max = 4000)
+    @Column(name = "NOME_VARIABLE_EN")
+    private String nomeVariableEn;
+    @Size(max = 4000)
+    @Column(name = "DEFINIZIONE_IT")
+    private String definizioneIt;
+    @Size(max = 4000)
+    @Column(name = "DEFINIZIONE_EN")
+    private String definizioneEn;
+    @Size(max = 150)
+    @Column(name = "RAGGRUPPAMENTO")
+    private String raggruppamento;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 6)
+    @Column(name = "TIPO_VARIABILE")
+    private String tipoVariabile;
+    @OneToMany(mappedBy = "idVariable")
+    private Collection<SmInstanceVariable> smInstanceVariableCollection;
+    @OneToMany(mappedBy = "idVariabile")
+    private Collection<SmEdizUnitVar> smEdizUnitCollection;
+    @JoinColumn(name = "TIPO_VARIABILE_ID", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private SmVariabileType tipoVariabileId;
+
+    public SmVariable() {
+    }
+
+    public SmVariable(BigDecimal id) {
+        this.id = id;
+    }
+
+    public SmVariable(BigDecimal id, String idVariable, String nomeVariableIt, String tipoVariabile) {
+        this.id = id;
+        this.idVariable = idVariable;
+        this.nomeVariableIt = nomeVariableIt;
+        this.tipoVariabile = tipoVariabile;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof SmVariable)) {
+            return false;
+        }
+        SmVariable other = (SmVariable) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "it.istat.sintesi.survey.domain.smeta.SmVariable[ id=" + id + " ]";
+    }
+    
+}
