@@ -112,7 +112,7 @@ public class RuleService {
 		return checkedList;
 
 	}
-
+/*
 	public static void main(String[] args) {
 
 		HashMap<String, String> inputRow = new HashMap();
@@ -126,5 +126,5 @@ public class RuleService {
 	
 
 	}
-
+*/
 }

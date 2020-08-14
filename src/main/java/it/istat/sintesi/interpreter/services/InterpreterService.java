@@ -255,7 +255,7 @@ public class InterpreterService {
 
 		return listRet;
 	}
-
+	
 	private Object copyRowsData(SmEdizione edizione, SmStepInstance sIstance) throws Exception {
 
 		List<SmWorkset> worksetList = sIstance.getSmWorksets();

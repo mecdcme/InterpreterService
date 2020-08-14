@@ -20,7 +20,7 @@ import it.istat.sintesi.interpreter.bean.LogicalRelation;
 import it.istat.sintesi.interpreter.bean.UnitDBModel;
 import it.istat.sintesi.interpreter.smeta.domain.SmEdizUnitVar;
 import it.istat.sintesi.interpreter.utils.PojoUtiliy;
-import oracle.sql.NUMBER;
+
 
 @Repository
 public class InterpreterSqlDAO {
@@ -354,7 +354,7 @@ public class InterpreterSqlDAO {
 		for (Iterator iterator = values.iterator(); iterator.hasNext();) {
 			String value = (String) iterator.next();
 
-			if (value == null || value.equals("null")) value="";
+		//	if (value == null || value.equals("null")) value="";
 				q.setParameter(i, value);
 			i++;
 		}
