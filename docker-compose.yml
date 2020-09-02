@@ -1,0 +1,40 @@
+version: '3'
+services:
+  app:
+    image: mecdcme/interpreter-service:latest
+    ports:
+      - 8091:8090
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/interpreter?useSSL=false&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.cj.jdbc.Driver
+      - SPRING_DATASOURCE_PLATFORM=mysql
+    depends_on:
+      - db
+    restart: always
+  db:
+   image: mysql:latest
+   security_opt:
+    - seccomp:unconfined
+   cap_add:
+     - SYS_NICE  # CAP_SYS_NICE
+   command: ["--innodb_use_native_aio=0","--default-authentication-plugin=mysql_native_password","--lower_case_table_names=1"]
+   volumes:
+    - ./db/interpreter-create-mysql.sql:/docker-entrypoint-initdb.d/interpreter-create-mysql.sql
+    # - ./db/interpreter-data.sql:/docker-entrypoint-initdb.d/interpreter-data.sql
+   restart: always
+   environment:
+    MYSQL_USER: root
+    MYSQL_PASSWORD: root
+    MYSQL_DATABASE: interpreter
+    MYSQL_ROOT_PASSWORD: root
+   ports:
+    - 3306:3306
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8082:8080
+ 
+
