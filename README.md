@@ -22,13 +22,6 @@ Also you can create a PostgreSQL database using the script `interpreter-create-p
 
 Then yo can load the metadata and the test data, using the script `interpreter-data.sql` stored in the [IS_PATH/db](db/interpreter-data.sql) folder.
 
-The script will populate the `USER/ROLES` tables with the user:
-```
-Username: admin@is2.it
-Password: istat
-``` 
-
-
 As a first step, configure the database connection in the 'application.properties' file, located in the path `[IS_PATH]/src/main/resources`:
 
 Postgres connection
@@ -61,8 +54,8 @@ or using Maven comand:
 ```
 [IS_PATH]> mvn spring-boot:run 
 ```
-
-Docker compose
+## Docker compose
+You can run the InterpreterSerivec as Docker containers using docker compose: 
 ```
 [IS_PATH]> docker-compose up
 ```
