@@ -15,6 +15,7 @@ In order to build the IS2 application, your environment should fulfill the follo
 
 ## How to build
 Download and unzip the source code in your developing folder `IS_PATH`.
+
 Before building the application you must create and popolulate the IS database.
 
 You can create a MySQL database using the script `interpreter-create-mysql.sql` stored in the [IS_PATH/db](db/interpreter-create-mysql.sql) folder.
@@ -67,15 +68,18 @@ The Interpreter can perform a generic step defined in the sm_step_instance table
   
 For the loaded data you can do:
   
-1.   http://localhost:8090/api/interpreter/dostep/1/1
+1.   http://localhost:8090/api/interpreter/dostep/1/1 
+
       Step 1 (COPY_ROWS_DATA) is carried out for edition 1 (FATT survey): the data is copied from a data collection system (mi_fatt and
        fatt_portal) to the Working data table (fatt_sintesi) after having been filtered and mapped through mapping rules (SM_RULE table).
   
-2.   http://localhost:8090/api/interpreter/dostep/1/2
+2.   http://localhost:8090/api/interpreter/dostep/1/2 
+
       Step 2 (VALIDATE_RULES) is performed for edition 1 (FATT survey): the data are "Validated" according to the validation rules defined in the table
        SM_RULE.
 
-3.   http://localhost:8090/api/interpreter/dostep/1/3
+3.   http://localhost:8090/api/interpreter/dostep/1/3 
+
       Step 3 (VIEW_DATA) is performed for edition 1 (FATT survey): the data are loaded and displayed on the screen.
 
 
