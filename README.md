@@ -62,7 +62,7 @@ You can run the InterpreterSerivec as Docker containers using docker compose:
 ```
 
 ## Test the application 
-The Interpreter can perform a generic step defined in the sm_step_instance table for a given edition (Statistical Program cycle) of the survey, through the URL:
+The Interpreter can perform a generic step defined in the  `sm_step_instance` table for a given edition (Statistical Program cycle) of the survey, through the URL:
 
   http://localhost:8090/api/interpreter/dostep/{edition}/{step}
   
